@@ -32,6 +32,15 @@ export async function packPlugin(opts: { output?: string }) {
 
   console.log(chalk.blue(`\n📦 Packaging ${manifest.name} v${manifest.version}...\n`))
 
+  // 路径遍历防护：验证所有被打包的目录都在项目内
+  const validateInside = (dir: string, label: string) => {
+    const resolved = path.resolve(dir)
+    if (!resolved.startsWith(cwd)) {
+      console.error(chalk.red(`❌ ${label} (${resolved}) is outside project directory. Aborting.`))
+      process.exit(1)
+    }
+  }
+
   await new Promise<void>((resolve, reject) => {
     const output = fs.createWriteStream(outPath)
     const archive = archiver.default('zip', { zlib: { level: 9 } })
@@ -45,24 +54,28 @@ export async function packPlugin(opts: { output?: string }) {
 
     // dist/ (compiled JS)
     if (fs.existsSync(distDir)) {
+      validateInside(distDir, 'dist/')
       archive.directory(distDir, 'dist')
     }
 
     // renderer/ (Vue components if any)
     const rendererDir = path.join(cwd, 'src', 'renderer')
     if (fs.existsSync(rendererDir)) {
+      validateInside(rendererDir, 'renderer/')
       archive.directory(rendererDir, 'renderer')
     }
 
     // agent/ (agent-side scripts if any)
     const agentDir = path.join(cwd, 'agent')
     if (fs.existsSync(agentDir)) {
+      validateInside(agentDir, 'agent/')
       archive.directory(agentDir, 'agent')
     }
 
     // assets
     const assetsDir = path.join(cwd, 'assets')
     if (fs.existsSync(assetsDir)) {
+      validateInside(assetsDir, 'assets/')
       archive.directory(assetsDir, 'assets')
     }
 

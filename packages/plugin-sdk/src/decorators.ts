@@ -68,7 +68,10 @@ export function RequirePermission(...permissions: string[]) {
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const original = descriptor.value
     descriptor.value = function (this: any, ...args: any[]) {
-      const pluginPermissions = this.context?.metadata?.permissions || []
+      const pluginPermissions = this.context?.metadata?.permissions
+      if (!pluginPermissions) {
+        throw new Error(`权限检查失败: 缺少插件上下文`)
+      }
       for (const perm of permissions) {
         if (!pluginPermissions.includes(perm)) {
           throw new Error(`缺少权限: ${perm}`)

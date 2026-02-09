@@ -2,7 +2,20 @@ import { Plugin, Tool } from 'runixo-sdk'
 
 export default class NginxManagerPlugin extends Plugin {
   private get configPath() {
-    return this.config.nginxConfigPath || '/etc/nginx'
+    const p = this.config.nginxConfigPath || '/etc/nginx'
+    // 防止命令注入：只允许安全的路径字符
+    if (!/^\/[a-zA-Z0-9_./-]+$/.test(p)) {
+      throw new Error(`Invalid nginx config path: ${p}`)
+    }
+    return p
+  }
+
+  // 验证站点文件名，防止命令注入
+  private validateSiteName(site: string): string {
+    if (!/^[a-zA-Z0-9._-]+$/.test(site)) {
+      throw new Error(`Invalid site name: ${site}`)
+    }
+    return site
   }
 
   async onEnable() {
@@ -54,7 +67,8 @@ export default class NginxManagerPlugin extends Plugin {
     }
   })
   async getSiteConfig(params: { serverId: string; site: string }) {
-    const paths = [`${this.configPath}/sites-enabled/${params.site}`, `${this.configPath}/conf.d/${params.site}`]
+    const site = this.validateSiteName(params.site)
+    const paths = [`${this.configPath}/sites-enabled/${site}`, `${this.configPath}/conf.d/${site}`]
     for (const p of paths) {
       const r = await this.context.server.executeCommand(params.serverId, 'bash', ['-c', `cat "${p}" 2>/dev/null`])
       if (r.exit_code === 0 && r.stdout) return { path: p, content: r.stdout }
