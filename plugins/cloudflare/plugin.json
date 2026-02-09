@@ -1,0 +1,217 @@
+{
+  "id": "cloudflare",
+  "name": "Cloudflare 管理",
+  "version": "1.0.0",
+  "description": "Cloudflare DNS、CDN、WAF、SSL证书、Tunnel 管理",
+  "author": "Runixo",
+  "icon": "☁️",
+  "main": "dist/main.js",
+  "renderer": "dist/ui.js",
+  "permissions": [
+    "menu:register",
+    "route:register",
+    "tool:register",
+    "network:request"
+  ],
+  "capabilities": {
+    "menus": [
+      {
+        "id": "cloudflare-main",
+        "label": "Cloudflare",
+        "icon": "Cloudy",
+        "route": "/plugin/cloudflare",
+        "position": "sidebar",
+        "order": 50
+      }
+    ],
+    "routes": [
+      {
+        "path": "/plugin/cloudflare",
+        "name": "CloudflarePlugin",
+        "component": "views/Main.vue"
+      },
+      {
+        "path": "/plugin/cloudflare/dns/:zoneId?",
+        "name": "CloudflareDNS",
+        "component": "views/DNS.vue"
+      },
+      {
+        "path": "/plugin/cloudflare/security/:zoneId?",
+        "name": "CloudflareSecurity",
+        "component": "views/Security.vue"
+      }
+    ],
+    "tools": [
+      {
+        "name": "cloudflare_list_zones",
+        "displayName": "列出 Cloudflare 域名",
+        "description": "获取 Cloudflare 账户下的所有域名（Zone）列表",
+        "category": "cloudflare",
+        "dangerous": false,
+        "parameters": {
+          "status": {
+            "type": "string",
+            "description": "域名状态过滤：active, pending, initializing, moved, deleted, deactivated",
+            "required": false
+          }
+        },
+        "handler": "listZones"
+      },
+      {
+        "name": "cloudflare_list_dns_records",
+        "displayName": "列出 DNS 记录",
+        "description": "获取指定域名的 DNS 记录列表",
+        "category": "cloudflare",
+        "dangerous": false,
+        "parameters": {
+          "zoneId": {
+            "type": "string",
+            "description": "域名 Zone ID",
+            "required": true
+          },
+          "type": {
+            "type": "string",
+            "description": "记录类型过滤：A, AAAA, CNAME, TXT, MX, NS 等",
+            "required": false
+          }
+        },
+        "handler": "listDNSRecords"
+      },
+      {
+        "name": "cloudflare_create_dns_record",
+        "displayName": "创建 DNS 记录",
+        "description": "为指定域名创建新的 DNS 记录",
+        "category": "cloudflare",
+        "dangerous": true,
+        "parameters": {
+          "zoneId": {
+            "type": "string",
+            "description": "域名 Zone ID",
+            "required": true
+          },
+          "type": {
+            "type": "string",
+            "description": "记录类型：A, AAAA, CNAME, TXT, MX 等",
+            "required": true
+          },
+          "name": {
+            "type": "string",
+            "description": "记录名称（子域名）",
+            "required": true
+          },
+          "content": {
+            "type": "string",
+            "description": "记录内容（IP地址或目标）",
+            "required": true
+          },
+          "proxied": {
+            "type": "boolean",
+            "description": "是否启用 Cloudflare 代理",
+            "required": false,
+            "default": false
+          }
+        },
+        "handler": "createDNSRecord"
+      },
+      {
+        "name": "cloudflare_delete_dns_record",
+        "displayName": "删除 DNS 记录",
+        "description": "删除指定的 DNS 记录",
+        "category": "cloudflare",
+        "dangerous": true,
+        "parameters": {
+          "zoneId": {
+            "type": "string",
+            "description": "域名 Zone ID",
+            "required": true
+          },
+          "recordId": {
+            "type": "string",
+            "description": "DNS 记录 ID",
+            "required": true
+          }
+        },
+        "handler": "deleteDNSRecord"
+      },
+      {
+        "name": "cloudflare_purge_cache",
+        "displayName": "清除缓存",
+        "description": "清除 Cloudflare CDN 缓存",
+        "category": "cloudflare",
+        "dangerous": true,
+        "parameters": {
+          "zoneId": {
+            "type": "string",
+            "description": "域名 Zone ID",
+            "required": true
+          },
+          "purgeEverything": {
+            "type": "boolean",
+            "description": "是否清除所有缓存",
+            "required": false,
+            "default": false
+          },
+          "files": {
+            "type": "array",
+            "description": "要清除的文件 URL 列表",
+            "required": false
+          }
+        },
+        "handler": "purgeCache"
+      },
+      {
+        "name": "cloudflare_get_security_level",
+        "displayName": "获取安全级别",
+        "description": "获取域名的安全级别设置",
+        "category": "cloudflare",
+        "dangerous": false,
+        "parameters": {
+          "zoneId": {
+            "type": "string",
+            "description": "域名 Zone ID",
+            "required": true
+          }
+        },
+        "handler": "getSecurityLevel"
+      },
+      {
+        "name": "cloudflare_set_security_level",
+        "displayName": "设置安全级别",
+        "description": "设置域名的安全级别",
+        "category": "cloudflare",
+        "dangerous": true,
+        "parameters": {
+          "zoneId": {
+            "type": "string",
+            "description": "域名 Zone ID",
+            "required": true
+          },
+          "level": {
+            "type": "string",
+            "description": "安全级别：off, essentially_off, low, medium, high, under_attack",
+            "required": true
+          }
+        },
+        "handler": "setSecurityLevel"
+      }
+    ]
+  },
+  "config": {
+    "apiToken": {
+      "label": "API Token",
+      "type": "password",
+      "description": "Cloudflare API Token",
+      "required": true
+    },
+    "accountId": {
+      "label": "Account ID",
+      "type": "string",
+      "description": "Cloudflare Account ID（可选）",
+      "required": false
+    }
+  },
+  "dependencies": [],
+  "minAppVersion": "1.0.0",
+  "homepage": "https://github.com/runixo/plugins/cloudflare",
+  "repository": "https://github.com/runixo/plugins"
+}

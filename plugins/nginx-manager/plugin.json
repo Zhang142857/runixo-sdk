@@ -1,0 +1,24 @@
+{
+  "id": "nginx-manager",
+  "name": "Nginx 管理",
+  "version": "1.0.0",
+  "description": "可视化管理 Nginx 配置、虚拟主机和 SSL 证书",
+  "author": "Runixo",
+  "icon": "nginx",
+  "category": "web",
+  "main": "dist/main/index.js",
+  "renderer": "renderer/views/Main.vue",
+  "permissions": ["tool:register", "menu:register", "route:register", "server:read", "command:execute"],
+  "capabilities": {
+    "menus": [
+      { "id": "nginx-manager", "label": "Nginx", "icon": "Connection", "route": "/plugin/nginx-manager", "position": "sidebar", "order": 60 }
+    ],
+    "routes": [
+      { "path": "/plugin/nginx-manager", "name": "NginxManager", "component": "views/Main.vue" }
+    ]
+  },
+  "config": {
+    "nginxConfigPath": { "label": "Nginx 配置路径", "type": "string", "default": "/etc/nginx", "required": false },
+    "autoReload": { "label": "修改后自动 reload", "type": "boolean", "default": false, "required": false }
+  }
+}

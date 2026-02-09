@@ -1,0 +1,128 @@
+{
+  "id": "devops-assistant",
+  "name": "DevOps 助手",
+  "version": "1.0.0",
+  "description": "智能DevOps助手，提供自动化部署、监控和故障诊断",
+  "author": "Runixo Team",
+  "icon": "devops-icon.png",
+  "homepage": "https://github.com/runixo/plugin-devops-assistant",
+  "repository": "https://github.com/runixo/plugin-devops-assistant",
+  "license": "MIT",
+  "keywords": ["devops", "deployment", "monitoring", "ai"],
+  "main": "dist/main/index.js",
+  "renderer": "dist/renderer/index.js",
+  "permissions": [
+    "network:request",
+    "menu:register",
+    "route:register",
+    "tool:register",
+    "agent:register",
+    "workflow:register",
+    "prompt:register",
+    "server:read",
+    "server:write",
+    "command:execute"
+  ],
+  "dependencies": {
+    "plugins": {},
+    "npm": {
+      "axios": "^1.6.0"
+    }
+  },
+  "config": {
+    "type": "object",
+    "title": "DevOps助手配置",
+    "description": "配置DevOps助手的行为和集成",
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "title": "启用助手",
+        "description": "是否启用DevOps助手",
+        "default": true,
+        "ui": {
+          "widget": "switch",
+          "order": 1
+        }
+      },
+      "deploymentMode": {
+        "type": "string",
+        "title": "部署模式",
+        "description": "选择默认的部署模式",
+        "enum": ["manual", "auto", "scheduled"],
+        "default": "manual",
+        "ui": {
+          "widget": "select",
+          "order": 2
+        }
+      },
+      "notificationWebhook": {
+        "type": "string",
+        "title": "通知Webhook",
+        "description": "接收部署通知的Webhook URL",
+        "format": "url",
+        "ui": {
+          "widget": "input",
+          "placeholder": "https://hooks.slack.com/...",
+          "order": 3
+        }
+      },
+      "maxConcurrentDeploys": {
+        "type": "number",
+        "title": "最大并发部署数",
+        "description": "同时进行的最大部署任务数",
+        "minimum": 1,
+        "maximum": 10,
+        "default": 3,
+        "ui": {
+          "widget": "slider",
+          "order": 4
+        }
+      },
+      "autoRollback": {
+        "type": "boolean",
+        "title": "自动回滚",
+        "description": "部署失败时自动回滚到上一个版本",
+        "default": true,
+        "ui": {
+          "widget": "checkbox",
+          "order": 5
+        }
+      },
+      "healthCheckInterval": {
+        "type": "number",
+        "title": "健康检查间隔（秒）",
+        "description": "服务健康检查的时间间隔",
+        "minimum": 10,
+        "maximum": 300,
+        "default": 60,
+        "ui": {
+          "widget": "input",
+          "order": 6
+        }
+      }
+    },
+    "required": ["enabled", "deploymentMode"]
+  },
+  "capabilities": {
+    "menus": [
+      {
+        "id": "devops-menu",
+        "label": "DevOps",
+        "icon": "devops",
+        "position": "sidebar",
+        "order": 50
+      }
+    ],
+    "routes": [
+      {
+        "path": "/devops",
+        "name": "DevOps",
+        "component": "views/DevOps.vue",
+        "meta": {
+          "title": "DevOps助手",
+          "icon": "devops"
+        }
+      }
+    ]
+  }
+}

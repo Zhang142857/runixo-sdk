@@ -1,0 +1,62 @@
+{
+  "id": "cloudflare",
+  "name": "Cloudflare 管理",
+  "version": "2.0.0",
+  "description": "Cloudflare DNS、CDN、WAF、SSL证书、Tunnel 管理",
+  "author": "Runixo",
+  "icon": "☁️",
+  "category": "cloud-service",
+  "main": "dist/main/index.js",
+  "permissions": [
+    "network:request",
+    "menu:register",
+    "route:register",
+    "tool:register",
+    "agent:tool"
+  ],
+  "capabilities": {
+    "menus": [
+      {
+        "id": "cloudflare-main",
+        "label": "Cloudflare",
+        "icon": "Cloudy",
+        "route": "/plugin/cloudflare",
+        "position": "sidebar",
+        "order": 50
+      }
+    ],
+    "routes": [
+      {
+        "path": "/plugin/cloudflare",
+        "name": "CloudflarePlugin",
+        "component": "views/Main.vue"
+      },
+      {
+        "path": "/plugin/cloudflare/dns/:zoneId?",
+        "name": "CloudflareDNS",
+        "component": "views/DNS.vue"
+      },
+      {
+        "path": "/plugin/cloudflare/security/:zoneId?",
+        "name": "CloudflareSecurity",
+        "component": "views/Security.vue"
+      }
+    ]
+  },
+  "config": {
+    "apiToken": {
+      "label": "API Token",
+      "type": "password",
+      "description": "Cloudflare API Token",
+      "required": true
+    },
+    "accountId": {
+      "label": "Account ID",
+      "type": "string",
+      "description": "Cloudflare Account ID（可选）",
+      "required": false
+    }
+  },
+  "dependencies": [],
+  "minAppVersion": "2.0.0"
+}

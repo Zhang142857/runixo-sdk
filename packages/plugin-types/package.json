@@ -1,0 +1,22 @@
+{
+  "name": "runixo-plugin-types",
+  "version": "1.0.0",
+  "description": "TypeScript type definitions for Runixo plugins",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "keywords": [
+    "runixo",
+    "plugin",
+    "types",
+    "typescript"
+  ],
+  "author": "Runixo",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}

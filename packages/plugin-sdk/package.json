@@ -1,0 +1,25 @@
+{
+  "name": "runixo-plugin-sdk",
+  "version": "1.0.0",
+  "description": "SDK for building Runixo plugins",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "runixo",
+    "plugin",
+    "sdk"
+  ],
+  "author": "Runixo",
+  "license": "MIT",
+  "dependencies": {
+    "runixo-plugin-types": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}

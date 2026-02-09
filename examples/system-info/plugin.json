@@ -1,0 +1,19 @@
+{
+  "id": "system-info",
+  "name": "系统信息",
+  "version": "1.0.0",
+  "description": "Display detailed system information for connected servers",
+  "author": "Runixo",
+  "icon": "📊",
+  "category": "monitoring",
+  "main": "dist/main/index.js",
+  "renderer": "renderer/views/Main.vue",
+  "permissions": ["tool:register", "menu:register", "route:register", "server:read"],
+  "capabilities": {
+    "menus": [{ "id": "system-info", "label": "系统信息", "icon": "Monitor", "route": "/plugin/system-info", "position": "sidebar", "order": 90 }],
+    "routes": [{ "path": "/plugin/system-info", "name": "SystemInfoPlugin", "component": "views/Main.vue" }]
+  },
+  "config": {
+    "refreshInterval": { "label": "刷新间隔(秒)", "type": "number", "default": 5, "required": false }
+  }
+}

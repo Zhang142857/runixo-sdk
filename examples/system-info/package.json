@@ -1,0 +1,7 @@
+{
+  "name": "runixo-plugin-system-info",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": { "build": "tsc", "pack": "runixo-plugin pack" },
+  "devDependencies": { "runixo-sdk": "file:../../", "typescript": "^5.3.0" }
+}
